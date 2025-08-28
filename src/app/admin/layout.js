@@ -1,0 +1,23 @@
+import AdminSidebar from '../../components/admin/AdminSidebar';
+
+export const metadata = {
+  title: 'Admin Dashboard - Pet Adoption System',
+  description: 'Admin panel for managing pets, users, and adoption requests',
+};
+
+export default function AdminLayout({ children }) {
+  return (
+    <html lang="en">
+      <body className="antialiased">
+        <div className="min-h-screen bg-gray-50">
+          <div className="flex">
+            <AdminSidebar />
+            <main className="flex-1 p-6">
+              {children}
+            </main>
+          </div>
+        </div>
+      </body>
+    </html>
+  );
+}
