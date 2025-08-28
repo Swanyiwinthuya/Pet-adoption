@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import Link from 'next/link';
 
 export default function Footer() {
@@ -49,89 +48,6 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-white border-t border-gray-200">
-      <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:py-16 lg:px-8">
-        <div className="xl:grid xl:grid-cols-3 xl:gap-8">
-          <div className="space-y-8 xl:col-span-1">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-blue-600">Pet Adoption</h1>
-            </div>
-            <p className="text-gray-500 text-base">
-              Helping pets find their forever homes. Our mission is to connect loving families with pets in need.
-            </p>
-            <div className="flex space-x-6">
-              {navigation.social.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className="text-gray-400 hover:text-gray-500"
-                >
-                  <span className="sr-only">{item.name}</span>
-                  <item.icon className="h-6 w-6" aria-hidden="true" />
-                </a>
-              ))}
-            </div>
-          </div>
-          <div className="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
-            <div className="md:grid md:grid-cols-2 md:gap-8">
-              <div>
-                <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">
-                  Navigation
-                </h3>
-                <ul className="mt-4 space-y-4">
-                  {navigation.main.map((item) => (
-                    <li key={item.name}>
-                      <Link
-                        href={item.href}
-                        className="text-base text-gray-500 hover:text-gray-900 transition-colors"
-                      >
-                        {item.name}
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-              <div className="mt-12 md:mt-0">
-                <h3 className="text-sm font-semibold text-gray-400 tracking-wider uppercase">
-                  Support
-                </h3>
-                <ul className="mt-4 space-y-4">
-                  <li>
-                    <Link
-                      href="/contact"
-                      className="text-base text-gray-500 hover:text-gray-900 transition-colors"
-                    >
-                      Contact Us
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/about"
-                      className="text-base text-gray-500 hover:text-gray-900 transition-colors"
-                    >
-                      About Us
-                    </Link>
-                  </li>
-                  <li>
-                    <Link
-                      href="/admin/login"
-                      className="text-base text-gray-500 hover:text-gray-900 transition-colors"
-                    >
-                      Admin Access
-                    </Link>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className="mt-12 border-t border-gray-200 pt-8">
-          <p className="text-base text-gray-400 xl:text-center">
-            &copy; 2024 Pet Adoption System. All rights reserved.
-          </p>
-=======
-export default function Footer() {
-  return (
     <footer className="bg-gray-900 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
@@ -141,15 +57,44 @@ export default function Footer() {
             <p className="text-gray-300 text-sm">
               Helping pets find their forever homes since 2020. We believe every pet deserves a loving family.
             </p>
+            <div className="flex space-x-4 mt-4">
+              {navigation.social.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className="text-gray-400 hover:text-white transition-colors"
+                >
+                  <span className="sr-only">{item.name}</span>
+                  <item.icon className="h-5 w-5" aria-hidden="true" />
+                </a>
+              ))}
+            </div>
           </div>
 
           {/* Quick Links */}
           <div>
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="/pets" className="text-gray-300 hover:text-white">Available Pets</a></li>
-              <li><a href="/about" className="text-gray-300 hover:text-white">About Us</a></li>
-              <li><a href="/contact" className="text-gray-300 hover:text-white">Contact</a></li>
+              <li>
+                <Link href="/pets" className="text-gray-300 hover:text-white transition-colors">
+                  Available Pets
+                </Link>
+              </li>
+              <li>
+                <Link href="/about" className="text-gray-300 hover:text-white transition-colors">
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="text-gray-300 hover:text-white transition-colors">
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link href="/admin/login" className="text-gray-300 hover:text-white transition-colors">
+                  Admin Access
+                </Link>
+              </li>
             </ul>
           </div>
 
@@ -157,9 +102,10 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Support</h3>
             <ul className="space-y-2 text-sm">
-              <li><a href="#" className="text-gray-300 hover:text-white">Adoption Process</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white">Pet Care Tips</a></li>
-              <li><a href="#" className="text-gray-300 hover:text-white">FAQ</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Adoption Process</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Pet Care Tips</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">FAQ</a></li>
+              <li><a href="#" className="text-gray-300 hover:text-white transition-colors">Volunteer</a></li>
             </ul>
           </div>
 
@@ -167,16 +113,28 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
             <div className="text-sm text-gray-300 space-y-2">
-              <p>📧 info@petadoption.com</p>
-              <p>📞 (09) 123-4567</p>
-              <p>📍 123 Soi Abac, Animal City, Bangna 10560</p>
+              <p className="flex items-center">
+                <span className="mr-2">📧</span>
+                info@petadoption.com
+              </p>
+              <p className="flex items-center">
+                <span className="mr-2">📞</span>
+                (09) 123-4567
+              </p>
+              <p className="flex items-center">
+                <span className="mr-2">📍</span>
+                123 Soi Abac, Animal City, Bangna 10560
+              </p>
+              <p className="flex items-center">
+                <span className="mr-2">🕒</span>
+                Mon-Fri: 9AM-6PM
+              </p>
             </div>
           </div>
         </div>
 
         <div className="border-t border-gray-800 mt-8 pt-8 text-center text-sm text-gray-300">
           <p>&copy; 2024 Pet Adoption Center. All rights reserved.</p>
->>>>>>> origin/main
         </div>
       </div>
     </footer>
