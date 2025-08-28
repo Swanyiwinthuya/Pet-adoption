@@ -36,8 +36,8 @@ export default function Footer() {
             <h3 className="text-lg font-semibold mb-4">Contact Info</h3>
             <div className="text-sm text-gray-300 space-y-2">
               <p>📧 info@petadoption.com</p>
-              <p>📞 (555) 123-4567</p>
-              <p>📍 123 Pet Street, Animal City, AC 12345</p>
+              <p>📞 (09) 123-4567</p>
+              <p>📍 123 Soi Abac, Animal City, Bangna 10560</p>
             </div>
           </div>
         </div>
