@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import MainSiteLayout from "../../components/layout/MainSiteLayout";
 
 export default function PetsPage() {
@@ -59,5 +60,13 @@ export default function PetsPage() {
         </div>
       </div>
     </MainSiteLayout>
+=======
+export default function PetsPage() {
+  return (
+    <div>
+      <h1>Available Pets</h1>
+      {/* Pet listing with filters will be implemented here */}
+    </div>
+>>>>>>> origin/main
   );
 }
