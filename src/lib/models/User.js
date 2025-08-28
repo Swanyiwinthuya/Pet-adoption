@@ -41,10 +41,17 @@ const userSchema = new mongoose.Schema({
     trim: true,
     validate: {
       validator: function(v) {
-        return /^[\+]?[1-9][\d]{0,15}$/.test(v);
+        // Accept formats: +1234567890, 1234567890, 0649916003, etc.
+        return /^[\+]?[\d]{8,15}$/.test(v);
       },
-      message: 'Please enter a valid phone number'
+      message: 'Please enter a valid phone number (8-15 digits, optionally starting with +)'
     }
+  },
+  role: {
+    type: String,
+    enum: ['user', 'admin'],
+    default: 'user',
+    required: true
   }
 }, {
   timestamps: true
