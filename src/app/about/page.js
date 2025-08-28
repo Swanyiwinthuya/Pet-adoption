@@ -82,45 +82,63 @@ export default function AboutPage() {
 =======
 export default function AboutPage() {
   return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8 text-center">About Pet Adoption Center</h1>
-        
-        <div className="prose prose-lg mx-auto">
-          <p className="text-xl text-gray-600 mb-8 text-center">
-            We are dedicated to helping pets find their forever homes and connecting families with their perfect companions.
-          </p>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
-            <div className="text-center">
-              <div className="text-4xl mb-4">❤️</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Our Mission</h3>
-              <p className="text-gray-600">To provide loving care for pets and facilitate successful adoptions</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl mb-4">🏠</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Our Vision</h3>
-              <p className="text-gray-600">A world where every pet has a loving home and family</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl mb-4">🤝</div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-2">Our Values</h3>
-              <p className="text-gray-600">Compassion, responsibility, and dedication to animal welfare</p>
-            </div>
-          </div>
-          
-          <div className="bg-gray-50 p-8 rounded-lg">
-            <h2 className="text-2xl font-bold text-gray-900 mb-4">Our Story</h2>
-            <p className="text-gray-700 mb-4">
-              Founded in 2020, Pet Adoption Center has been serving our community by providing a safe haven for pets in need and connecting them with loving families. Our dedicated team works tirelessly to ensure every pet receives the care and attention they deserve.
-            </p>
-            <p className="text-gray-700">
-              We believe that every pet deserves a second chance and every family deserves the joy that comes with pet companionship. Through our comprehensive adoption process, we ensure successful matches that benefit both pets and their new families.
-            </p>
-          </div>
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="text-center">
+        <h1 className="text-3xl sm:text-4xl font-extrabold text-blue-900">About Pet Adoption Center</h1>
+        <p className="mt-4 text-lg text-gray-600">We connect loving pets with caring humans. Our platform works with trusted shelters and fosters to make adoption simple, transparent, and humane.</p>
+      </div>
+
+      <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="rounded-2xl border border-gray-200 bg-white p-6">
+          <div className="text-4xl">💙</div>
+          <h3 className="mt-4 text-xl font-semibold text-blue-900">Our Mission</h3>
+          <p className="mt-2 text-gray-600">Help every pet find a safe, loving home by removing friction from the adoption journey and supporting responsible ownership.</p>
+        </div>
+        <div className="rounded-2xl border border-gray-200 bg-white p-6">
+          <div className="text-4xl">🔍</div>
+          <h3 className="mt-4 text-xl font-semibold text-blue-900">What We Do</h3>
+          <p className="mt-2 text-gray-600">Centralized listings, verified shelters, clear application steps, and friendly guidance from discovery to adoption day.</p>
+        </div>
+        <div className="rounded-2xl border border-gray-200 bg-white p-6">
+          <div className="text-4xl">🤝</div>
+          <h3 className="mt-4 text-xl font-semibold text-blue-900">Trusted Partners</h3>
+          <p className="mt-2 text-gray-600">We collaborate with local rescues and clinics to ensure pets are vaccinated, microchipped, and ready for a new start.</p>
         </div>
       </div>
+
+      <div className="mt-12 rounded-2xl border border-gray-200 bg-white p-6">
+        <h2 className="text-2xl font-bold text-gray-900">How adoption works</h2>
+        <ol className="mt-4 grid grid-cols-1 md:grid-cols-3 gap-6 list-decimal list-inside">
+          <li className="rounded-xl bg-gray-50 p-4 text-red-900"><span className="font-semibold">Browse:</span> filter by species, age, and personality to match your lifestyle.</li>
+          <li className="rounded-xl bg-gray-50 p-4 text-red-900"><span className="font-semibold">Meet:</span> schedule a visit or virtual meeting with the shelter.</li>
+          <li className="rounded-xl bg-gray-50 p-4 text-red-900"><span className="font-semibold">Adopt:</span> complete the paperwork and welcome a new family member.</li>
+        </ol>
+      </div>
+
+      <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="rounded-2xl bg-blue-50 p-6 text-center">
+          <div className="text-3xl font-extrabold text-blue-700">1,240+</div>
+          <div className="text-sm text-blue-800">Pets adopted</div>
+        </div>
+        <div className="rounded-2xl bg-purple-50 p-6 text-center">
+          <div className="text-3xl font-extrabold text-purple-700">35</div>
+          <div className="text-sm text-purple-800">Partner shelters</div>
+        </div>
+        <div className="rounded-2xl bg-emerald-50 p-6 text-center">
+          <div className="text-3xl font-extrabold text-emerald-700">900+</div>
+          <div className="text-sm text-emerald-800">Happy adopters</div>
+        </div>
+      </div>
+
+      <div className="mt-12 text-center">
+        <a href="/pets" className="inline-flex items-center rounded-xl bg-gray-900 px-5 py-3 text-white font-medium hover:bg-black">Start finding pets →</a>
+      </div>
     </div>
+<<<<<<< HEAD
 >>>>>>> origin/main
   );
 }
+=======
+  )
+}
+>>>>>>> origin/swanyi

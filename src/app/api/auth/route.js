@@ -7,3 +7,4 @@ export async function GET(request) {
   // Get auth status will be implemented here
   return new Response('Auth status', { status: 200 });
 }
+
