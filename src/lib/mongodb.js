@@ -1,26 +1,11 @@
 import { MongoClient } from 'mongodb';
 
-// TODO: Replace with environment variable later
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb+srv://socalledjamesakp_db_user:akp12345@cluster0.kzzglid.mongodb.net/pet-adoption?retryWrites=true&w=majority&appName=Cluster0';
-
-if (!MONGODB_URI) {
+if (!process.env.MONGODB_URI) {
   throw new Error('Invalid/Missing environment variable: "MONGODB_URI"');
 }
 
-// Ensure the connection string includes the database name
-let uri = MONGODB_URI;
-if (!uri.includes('/pet-adoption')) {
-  uri = uri.replace('?', '/pet-adoption?');
-}
-
-const options = {
-  maxPoolSize: 10, // Maintain up to 10 socket connections
-  serverSelectionTimeoutMS: 5000, // Keep trying to send operations for 5 seconds
-  socketTimeoutMS: 45000, // Close sockets after 45 seconds of inactivity
-  family: 4, // Use IPv4, skip trying IPv6
-  retryWrites: true,
-  w: 'majority'
-};
+const uri = process.env.MONGODB_URI;
+const options = {};
 
 let client;
 let clientPromise;
