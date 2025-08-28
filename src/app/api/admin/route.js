@@ -1,53 +1,8 @@
 import { NextResponse } from 'next/server';
 import { connectDB } from '../../../lib/db';
-import Admin from '../../../lib/models/Admin';
+import User from '../../../lib/models/User';
 
-// GET /api/admin - Get all admins (for super admin use)
-export async function GET(request) {
-  try {
-    await connectDB();
-    
-    const { searchParams } = new URL(request.url);
-    const page = parseInt(searchParams.get('page')) || 1;
-    const limit = parseInt(searchParams.get('limit')) || 25;
-    
-    // Calculate skip value for pagination
-    const skip = (page - 1) * limit;
-    
-    // Execute query with pagination
-    const [admins, totalCount] = await Promise.all([
-      Admin.find({}, { password: 0 }) // Exclude passwords
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit)
-        .lean(),
-      Admin.countDocuments()
-    ]);
-    
-    const totalPages = Math.ceil(totalCount / limit);
-    
-    return NextResponse.json({
-      admins,
-      pagination: {
-        currentPage: page,
-        totalPages,
-        totalItems: totalCount,
-        itemsPerPage: limit,
-        hasNextPage: page < totalPages,
-        hasPrevPage: page > 1
-      }
-    });
-    
-  } catch (error) {
-    console.error('Error fetching admins:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch admins' },
-      { status: 500 }
-    );
-  }
-}
-
-// POST /api/admin - Create a new admin account
+// POST /api/admin - Create a new admin user
 export async function POST(request) {
   try {
     await connectDB();
@@ -55,7 +10,7 @@ export async function POST(request) {
     const body = await request.json();
     
     // Validate required fields
-    const requiredFields = ['email', 'password'];
+    const requiredFields = ['email', 'password', 'name', 'phone'];
     for (const field of requiredFields) {
       if (!body[field]) {
         return NextResponse.json(
@@ -65,19 +20,23 @@ export async function POST(request) {
       }
     }
     
-    // Check if admin already exists
-    const existingAdmin = await Admin.findOne({ email: body.email.toLowerCase() });
-    if (existingAdmin) {
+    // Check if user already exists
+    const existingUser = await User.findOne({ email: body.email.toLowerCase() });
+    if (existingUser) {
       return NextResponse.json(
-        { error: 'Admin with this email already exists' },
+        { error: 'User with this email already exists' },
         { status: 409 }
       );
     }
     
-    // Create new admin
-    const admin = new Admin({
+    // Create new admin user
+    const admin = new User({
       email: body.email.toLowerCase(),
-      password: body.password
+      password: body.password,
+      name: body.name,
+      phone: body.phone,
+      photo: body.photo || null,
+      role: 'admin' // Set role as admin
     });
     
     await admin.save();
@@ -103,6 +62,26 @@ export async function POST(request) {
     
     return NextResponse.json(
       { error: 'Failed to create admin' },
+      { status: 500 }
+    );
+  }
+}
+
+// GET /api/admin - Get all admins (for super admin use)
+export async function GET(request) {
+  try {
+    await connectDB();
+    
+    const admins = await User.find({ role: 'admin' }, { password: 0 })
+      .sort({ createdAt: -1 })
+      .lean();
+    
+    return NextResponse.json({ admins });
+    
+  } catch (error) {
+    console.error('Error fetching admins:', error);
+    return NextResponse.json(
+      { error: 'Failed to fetch admins' },
       { status: 500 }
     );
   }
