@@ -9,27 +9,17 @@
     "lint": "eslint"
   },
   "dependencies": {
-<<<<<<< HEAD
-<<<<<<< HEAD
     "@auth/mongodb-adapter": "^3.10.0",
+    "axios": "^1.11.0",
     "bcryptjs": "^3.0.2",
+    "colors": "^1.4.0",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.19.0",
     "mongoose": "^8.18.0",
     "next": "15.5.0",
     "next-auth": "^4.24.11",
-=======
-    "axios": "^1.11.0",
-    "colors": "^1.4.0",
-    "next": "15.5.0",
->>>>>>> origin/arkar
     "react": "19.1.0",
     "react-dom": "19.1.0"
-=======
-    "next": "^15.5.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
->>>>>>> origin/swanyi
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
