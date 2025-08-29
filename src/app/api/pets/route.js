@@ -4,6 +4,7 @@ import Pet from '../../../lib/models/Pet';
 
 // GET /api/pets - Get all pets with optional filtering
 export async function GET(request) {
+
   try {
     await connectDB();
     
