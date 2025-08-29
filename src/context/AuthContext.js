@@ -1,110 +1,60 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect } from 'react';
-import { signIn, signOut, useSession } from 'next-auth/react';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const { data: session, status } = useSession();
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
+  const [user, setUser] = useState({
+    id: 'demo-user-123',
+    name: 'Demo User',
+    email: 'demo@example.com',
+    role: 'admin'
+  });
 
-  useEffect(() => {
-    setIsLoading(status === 'loading');
-  }, [status]);
-
-  // Login function
+  // Mock login function
   const login = async (credentials) => {
-    try {
-      const result = await signIn('credentials', {
-        email: credentials.email,
-        password: credentials.password,
-        redirect: false,
-      });
-
-      if (result?.error) {
-        return { success: false, error: result.error };
-      }
-
-      return { success: true };
-    } catch (error) {
-      console.error('Login error:', error);
-      return { success: false, error: error.message };
-    }
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // For demo purposes, always return success
+    return { success: true };
   };
 
-  // Register function
+  // Mock register function
   const register = async (userData) => {
-    try {
-      const response = await fetch('/api/users', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        return { success: false, error: result.error };
-      }
-
-      // Auto-login after successful registration
-      const loginResult = await login({
-        email: userData.email,
-        password: userData.password,
-      });
-
-      return loginResult;
-    } catch (error) {
-      console.error('Registration error:', error);
-      return { success: false, error: error.message };
-    }
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // For demo purposes, always return success
+    return { success: true };
   };
 
-  // Logout function
+  // Mock logout function
   const logout = async () => {
-    try {
-      await signOut({ redirect: false });
-    } catch (error) {
-      console.error('Logout error:', error);
-    }
+    // For demo purposes, just log the action
+    console.log('User logged out');
   };
 
   // Check if user is admin
   const isAdmin = () => {
-    return session?.user?.role === 'admin';
+    return user?.role === 'admin';
   };
 
   // Update user profile
   const updateProfile = async (profileData) => {
-    try {
-      const response = await fetch(`/api/users/${session?.user?.id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(profileData),
-      });
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        return { success: false, error: result.error };
-      }
-
-      return { success: true, user: result.user };
-    } catch (error) {
-      console.error('Profile update error:', error);
-      return { success: false, error: error.message };
-    }
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // For demo purposes, always return success
+    return { success: true, user: { ...user, ...profileData } };
   };
 
   const value = {
-    user: session?.user || null,
+    user,
     isLoading,
-    isAuthenticated: !!session?.user,
+    isAuthenticated: true, // Always authenticated for demo
     login,
     register,
     logout,

@@ -3,23 +3,23 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Button from '../../../components/ui/Button';
-import AdminUsersTable from '../../../components/admin/AdminUsersTable';
+import AdoptersTable from '../../../components/admin/AdoptersTable';
 
-export default function AdminUsersPage() {
+export default function AdminAdoptersPage() {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterRole, setFilterRole] = useState('all');
   const [filterStatus, setFilterStatus] = useState('all');
+  const [filterExperience, setFilterExperience] = useState('all');
 
   return (
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Manage Users</h1>
-          <p className="text-gray-600 mt-1">View and manage all user accounts in the system</p>
+          <h1 className="text-3xl font-bold text-gray-900">Manage Adopters</h1>
+          <p className="text-gray-600 mt-1">View and manage all potential pet adopters</p>
         </div>
-        <Link href="/admin/users/new">
-          <Button>➕ Add New User</Button>
+        <Link href="/admin/adopters/new">
+          <Button>➕ Add New Adopter</Button>
         </Link>
       </div>
 
@@ -31,24 +31,11 @@ export default function AdminUsersPage() {
             <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
             <input
               type="text"
-              placeholder="Search by name, email..."
+              placeholder="Search by name, email, phone..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
-            <select
-              value={filterRole}
-              onChange={(e) => setFilterRole(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="all">All Roles</option>
-              <option value="admin">Admin</option>
-              <option value="user">User</option>
-              <option value="moderator">Moderator</option>
-            </select>
           </div>
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
@@ -59,16 +46,30 @@ export default function AdminUsersPage() {
             >
               <option value="all">All Status</option>
               <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-              <option value="suspended">Suspended</option>
+              <option value="approved">Approved</option>
+              <option value="pending">Pending Review</option>
+              <option value="rejected">Rejected</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Experience</label>
+            <select
+              value={filterExperience}
+              onChange={(e) => setFilterExperience(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">All Experience Levels</option>
+              <option value="beginner">Beginner</option>
+              <option value="intermediate">Intermediate</option>
+              <option value="experienced">Experienced</option>
             </select>
           </div>
           <div className="flex items-end">
             <Button 
               onClick={() => {
                 setSearchTerm('');
-                setFilterRole('all');
                 setFilterStatus('all');
+                setFilterExperience('all');
               }}
               variant="secondary"
             >
@@ -78,12 +79,12 @@ export default function AdminUsersPage() {
         </div>
       </div>
 
-      {/* Users Table */}
+      {/* Adopters Table */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <AdminUsersTable 
+        <AdoptersTable 
           searchTerm={searchTerm}
-          filterRole={filterRole}
           filterStatus={filterStatus}
+          filterExperience={filterExperience}
         />
       </div>
 
@@ -91,17 +92,17 @@ export default function AdminUsersPage() {
       <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
         <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
         <div className="flex flex-wrap gap-3">
-          <Link href="/admin/users/new">
-            <Button>➕ Add New User</Button>
+          <Link href="/admin/adopters/new">
+            <Button>➕ Add New Adopter</Button>
           </Link>
-          <Link href="/admin/users/import">
-            <Button variant="secondary">📥 Import Users</Button>
+          <Link href="/admin/adopters/import">
+            <Button variant="secondary">📥 Import Adopters</Button>
           </Link>
-          <Link href="/admin/users/export">
+          <Link href="/admin/adopters/export">
             <Button variant="secondary">📤 Export Data</Button>
           </Link>
-          <Link href="/admin/users/bulk-actions">
-            <Button variant="secondary">⚡ Bulk Actions</Button>
+          <Link href="/admin/adopters/bulk-approve">
+            <Button variant="secondary">✅ Bulk Approve</Button>
           </Link>
         </div>
       </div>

@@ -17,12 +17,6 @@ export default function Header() {
     { href: '/contact', label: 'Contact' },
   ];
 
-  const authLinks = [
-    { href: '/login', label: 'Login', variant: 'text' },
-    { href: '/register', label: 'Register', variant: 'button' },
-  ];
-
-  // Additional admin links (will be conditionally shown later)
   const adminLinks = [
     { href: '/admin', label: 'Admin Dashboard' },
     { href: '/admin/pets', label: 'Manage Pets' },
@@ -63,21 +57,22 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Auth Buttons */}
+          {/* Admin & Demo Links */}
           <div className="hidden md:flex items-center space-x-4">
-            {authLinks.map((link) => (
+            {/* Admin Links */}
+            <div className="flex items-center space-x-2">
               <Link
-                key={link.href}
-                href={link.href}
-                className={`transition-colors ${
-                  link.variant === 'button'
-                    ? 'bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700'
-                    : 'text-gray-700 hover:text-blue-600'
-                }`}
+                href="/admin"
+                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
               >
-                {link.label}
+                🚀 Admin Panel
               </Link>
-            ))}
+            </div>
+            
+            {/* Demo Info */}
+            <div className="text-sm text-gray-500">
+              Demo Mode - No Auth Required
+            </div>
           </div>
 
           {/* Mobile menu button */}
@@ -121,26 +116,9 @@ export default function Header() {
               {/* Divider */}
               <div className="border-t border-gray-200 my-2"></div>
               
-              {/* Auth Links */}
-              {authLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`block px-3 py-2 rounded-md transition-colors ${
-                    link.variant === 'button'
-                      ? 'bg-blue-600 text-white hover:bg-blue-700 text-center'
-                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
-
-              {/* Admin Links (shown conditionally) */}
-              <div className="border-t border-gray-200 my-2"></div>
+              {/* Admin Links */}
               <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                Admin (Demo)
+                Admin Panel
               </div>
               {adminLinks.map((link) => (
                 <Link
@@ -157,10 +135,21 @@ export default function Header() {
                 </Link>
               ))}
 
-              {/* User Links (shown conditionally) */}
+              {/* Divider */}
+              <div className="border-t border-gray-200 my-2"></div>
+              
+              {/* Demo Info */}
+              <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                Demo Features
+              </div>
+              <div className="px-3 py-2 text-sm text-gray-600">
+                🎯 Demo Mode Active - No Authentication Required
+              </div>
+              
+              {/* User Links */}
               <div className="border-t border-gray-200 my-2"></div>
               <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                User (Demo)
+                User Features
               </div>
               {userLinks.map((link) => (
                 <Link

@@ -1,112 +1,111 @@
 'use client';
 
 import { useState } from 'react';
-import AdminPetsTable from '../../../components/admin/AdminPetsTable';
+import Link from 'next/link';
+import Button from '../../../components/ui/Button';
+import PetsTable from '../../../components/admin/AdminPetsTable';
 import AddPetButton from '../../../components/admin/AddPetButton';
-import PetForm from '../../../components/admin/PetForm';
 
 export default function AdminPetsPage() {
-  const [isPetFormOpen, setIsPetFormOpen] = useState(false);
-  const [editingPet, setEditingPet] = useState(null);
-  const [pets, setPets] = useState([
-    {
-      id: 1,
-      name: 'Max',
-      animal: 'dog',
-      breed: 'Golden Retriever',
-      age: 2,
-      medicalCondition: 'Healthy, fully vaccinated',
-      status: 'available',
-      createdAt: '2024-01-01',
-    },
-    {
-      id: 2,
-      name: 'Luna',
-      animal: 'cat',
-      breed: 'Domestic Shorthair',
-      age: 1,
-      medicalCondition: 'Healthy, spayed',
-      status: 'available',
-      createdAt: '2024-01-02',
-    },
-    {
-      id: 3,
-      name: 'Buddy',
-      animal: 'dog',
-      breed: 'Labrador',
-      age: 3,
-      medicalCondition: 'Needs regular checkups',
-      status: 'adopted',
-      createdAt: '2024-01-03',
-    },
-  ]);
-
-  const handleAddPet = () => {
-    setEditingPet(null);
-    setIsPetFormOpen(true);
-  };
-
-  const handleEditPet = (pet) => {
-    setEditingPet(pet);
-    setIsPetFormOpen(true);
-  };
-
-  const handlePetSubmit = (petData) => {
-    if (editingPet) {
-      // Update existing pet
-      setPets(pets.map(pet => 
-        pet.id === editingPet.id 
-          ? { ...pet, ...petData, updatedAt: new Date().toISOString().split('T')[0] }
-          : pet
-      ));
-    } else {
-      // Add new pet
-      const newPet = {
-        id: Date.now(), // Simple ID generation for demo
-        ...petData,
-        status: 'available',
-        createdAt: new Date().toISOString().split('T')[0],
-        updatedAt: new Date().toISOString().split('T')[0]
-      };
-      setPets([...pets, newPet]);
-    }
-  };
-
-  const handleCloseForm = () => {
-    setIsPetFormOpen(false);
-    setEditingPet(null);
-  };
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filterAnimal, setFilterAnimal] = useState('all');
+  const [filterStatus, setFilterStatus] = useState('all');
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold text-gray-900">Manage Pets</h1>
-          <p className="text-gray-600 mt-1">Add, edit, and manage pets in the adoption system</p>
+          <p className="text-gray-600 mt-1">Add, edit, and manage all pets in the system</p>
         </div>
-        <AddPetButton onClick={handleAddPet} />
+        <AddPetButton />
       </div>
 
-      <div className="bg-white shadow rounded-lg">
-        <AdminPetsTable 
-          pets={pets} 
-          onEditPet={handleEditPet}
-          onDeletePet={(id) => {
-            if (confirm('Are you sure you want to delete this pet?')) {
-              setPets(pets.filter(pet => pet.id !== id));
-            }
-          }}
+      {/* Filters */}
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Filters</h2>
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+            <input
+              type="text"
+              placeholder="Search by name, breed..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Animal Type</label>
+            <select
+              value={filterAnimal}
+              onChange={(e) => setFilterAnimal(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">All Animals</option>
+              <option value="dog">Dogs</option>
+              <option value="cat">Cats</option>
+              <option value="bird">Birds</option>
+              <option value="rabbit">Rabbits</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
+            <select
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="all">All Status</option>
+              <option value="available">Available</option>
+              <option value="adopted">Adopted</option>
+              <option value="pending">Pending</option>
+            </select>
+          </div>
+          <div className="flex items-end">
+            <Button 
+              onClick={() => {
+                setSearchTerm('');
+                setFilterAnimal('all');
+                setFilterStatus('all');
+              }}
+              variant="secondary"
+            >
+              Clear Filters
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* Pets Table */}
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
+        <PetsTable 
+          searchTerm={searchTerm}
+          filterAnimal={filterAnimal}
+          filterStatus={filterStatus}
         />
       </div>
 
-      {/* Pet Form Modal */}
-      <PetForm
-        isOpen={isPetFormOpen}
-        onClose={handleCloseForm}
-        onSubmit={handlePetSubmit}
-        pet={editingPet}
-        mode={editingPet ? 'edit' : 'create'}
-      />
+      {/* Quick Actions */}
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+        <div className="flex flex-wrap gap-3">
+          <Link href="/admin/pets/new">
+            <Button>➕ Add New Pet</Button>
+          </Link>
+          <Link href="/admin/pets/import">
+            <Button variant="secondary">📥 Import Pets</Button>
+          </Link>
+          <Link href="/admin/pets/export">
+            <Button variant="secondary">📤 Export Data</Button>
+          </Link>
+          <Link href="/admin/pets/bulk-edit">
+            <Button variant="secondary">✏️ Bulk Edit</Button>
+          </Link>
+        </div>
+      </div>
     </div>
   );
 }

@@ -10,7 +10,8 @@ export default function AdminSidebar() {
     { name: 'Dashboard', href: '/admin', icon: '📊' },
     { name: 'Pets', href: '/admin/pets', icon: '🐕' },
     { name: 'Users', href: '/admin/users', icon: '👥' },
-    { name: 'Requests', href: '/admin/requests', icon: '📋' },
+    { name: 'Adoption Requests', href: '/admin/requests', icon: '📋' },
+    { name: 'Adopters', href: '/admin/adopters', icon: '🏠' },
     { name: 'Settings', href: '/admin/settings', icon: '⚙️' },
   ];
 
@@ -73,29 +74,27 @@ export default function AdminSidebar() {
           </div>
         </div>
 
-        {/* Admin Info */}
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+        {/* Demo Mode Info */}
+        <div className="mt-6 p-4 bg-green-50 rounded-lg">
           <div className="flex items-center">
-            <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
-              <span className="text-white font-medium text-sm">A</span>
+            <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center">
+              <span className="text-white font-medium text-sm">🎯</span>
             </div>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-900">Administrator</p>
-              <p className="text-xs text-gray-600">Ready for NextAuth</p>
+              <p className="text-sm font-medium text-gray-900">Demo Mode</p>
+              <p className="text-xs text-gray-600">No authentication required</p>
             </div>
           </div>
-          <div className="mt-3 pt-3 border-t border-blue-200">
+          <div className="mt-3 pt-3 border-t border-green-200">
             <Link
               href="/"
-              className="text-xs text-blue-600 hover:text-blue-800 block mb-1"
+              className="text-xs text-green-600 hover:text-green-800 block mb-1"
             >
               ← Back to Site
             </Link>
-            <button
-              className="text-xs text-red-600 hover:text-red-800"
-            >
-              Sign Out (NextAuth)
-            </button>
+            <div className="text-xs text-gray-500">
+              Full admin access for demonstration
+            </div>
           </div>
         </div>
       </div>
