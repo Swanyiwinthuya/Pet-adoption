@@ -17,12 +17,7 @@ export default function Header() {
     { href: '/contact', label: 'Contact' },
   ];
 
-  const adminLinks = [
-    { href: '/admin', label: 'Admin Dashboard' },
-    { href: '/admin/pets', label: 'Manage Pets' },
-    { href: '/admin/adopters', label: 'Manage Adopters' },
-    { href: '/admin/requests', label: 'Manage Requests' },
-  ];
+
 
   const userLinks = [
     { href: '/my-requests', label: 'My Requests' },
@@ -57,18 +52,8 @@ export default function Header() {
             ))}
           </nav>
 
-          {/* Admin & Demo Links */}
+          {/* Demo Links */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* Admin Links */}
-            <div className="flex items-center space-x-2">
-              <Link
-                href="/admin"
-                className="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700 transition-colors"
-              >
-                🚀 Admin Panel
-              </Link>
-            </div>
-            
             {/* Demo Info */}
             <div className="text-sm text-gray-500">
               Demo Mode - No Auth Required
@@ -113,27 +98,7 @@ export default function Header() {
                 </Link>
               ))}
               
-              {/* Divider */}
-              <div className="border-t border-gray-200 my-2"></div>
-              
-              {/* Admin Links */}
-              <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                Admin Panel
-              </div>
-              {adminLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className={`block px-3 py-2 rounded-md transition-colors ${
-                    isActive(link.href)
-                      ? 'text-blue-600 bg-blue-50 font-medium'
-                      : 'text-gray-700 hover:text-blue-600 hover:bg-gray-50'
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {link.label}
-                </Link>
-              ))}
+
 
               {/* Divider */}
               <div className="border-t border-gray-200 my-2"></div>

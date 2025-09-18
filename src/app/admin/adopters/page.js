@@ -59,8 +59,8 @@ export default function AdminAdoptersPage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="all">All Experience Levels</option>
-              <option value="beginner">Beginner</option>
-              <option value="intermediate">Intermediate</option>
+              <option value="first-time">First Time</option>
+              <option value="some">Some Experience</option>
               <option value="experienced">Experienced</option>
             </select>
           </div>

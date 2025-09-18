@@ -6,7 +6,6 @@ export default function Footer() {
       { name: 'About', href: '/about' },
       { name: 'Pets', href: '/pets' },
       { name: 'Contact', href: '/contact' },
-      { name: 'Admin', href: '/admin/login' },
     ],
     social: [
       {
@@ -90,11 +89,7 @@ export default function Footer() {
                   Contact
                 </Link>
               </li>
-              <li>
-                <Link href="/admin/login" className="text-gray-300 hover:text-white transition-colors">
-                  Admin Access
-                </Link>
-              </li>
+
             </ul>
           </div>
 

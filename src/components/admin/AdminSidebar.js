@@ -22,7 +22,7 @@ export default function AdminSidebar() {
   };
 
   return (
-    <div className="w-64 bg-white shadow-lg min-h-screen">
+    <div className="w-64 bg-white shadow-lg min-h-screen fixed left-0 top-0 z-30">
       <div className="p-6">
         {/* Page Title Section */}
         <div className="mb-6 pb-4 border-b border-gray-200">

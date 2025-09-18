@@ -74,7 +74,14 @@ export default function FindPetsPage(){
         if (!data) {
           try { data = await tryFetch('/api/pets') ; setSourceNote('Loaded from local /api/pets') } catch {}
         }
-        let arr = Array.isArray(data) ? data : []
+        // Handle API response format: { pets: [...], pagination: {...} }
+        let arr = []
+        if (data && Array.isArray(data.pets)) {
+          arr = data.pets
+        } else if (Array.isArray(data)) {
+          arr = data
+        }
+        
         if (!arr.length) {
           // Fallback when API returns empty or invalid
           setPets(demoPets.map(normalizeDoc))
@@ -137,7 +144,6 @@ export default function FindPetsPage(){
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
       <div className="flex items-center justify-between">
         <h1 className="text-3xl font-bold text-gray-900">Find Pets</h1>
-        <Link href="/admin" className="rounded-lg bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700">Admin Panel</Link>
       </div>
 
       {sourceNote && (

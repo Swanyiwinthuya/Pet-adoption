@@ -1,0 +1,267 @@
+[
+  {
+    "name": "Sarah Johnson",
+    "email": "sarah.johnson@email.com",
+    "phone": "+1 (555) 123-4567",
+    "status": "approved",
+    "experience": "experienced",
+    "housingType": "house",
+    "petPreference": "dog",
+    "applicationDate": "2024-01-15",
+    "lastContact": "2024-01-20",
+    "address": {
+      "street": "123 Oak Street",
+      "city": "Bangkok",
+      "state": "Bangkok",
+      "zipCode": "10110",
+      "country": "Thailand"
+    },
+    "emergencyContact": {
+      "name": "Michael Johnson",
+      "phone": "+1 (555) 123-4568",
+      "relationship": "spouse"
+    },
+    "veterinarianInfo": {
+      "clinicName": "Bangkok Pet Hospital",
+      "doctorName": "Dr. Somchai Veterinary",
+      "phone": "+66 2 123 4567"
+    },
+    "notes": "Experienced dog owner with large backyard. Previous pets: 2 Golden Retrievers."
+  },
+  {
+    "name": "Michael Chen",
+    "email": "michael.chen@email.com",
+    "phone": "+1 (555) 234-5678",
+    "status": "pending",
+    "experience": "first-time",
+    "housingType": "apartment",
+    "petPreference": "cat",
+    "applicationDate": "2024-01-18",
+    "lastContact": "2024-01-18",
+    "address": {
+      "street": "456 Sukhumvit Road, Unit 15B",
+      "city": "Bangkok",
+      "state": "Bangkok",
+      "zipCode": "10110",
+      "country": "Thailand"
+    },
+    "emergencyContact": {
+      "name": "Lisa Chen",
+      "phone": "+1 (555) 234-5679",
+      "relationship": "sister"
+    },
+    "notes": "First-time pet owner, works from home, looking for a calm indoor cat."
+  },
+  {
+    "name": "Emily Rodriguez",
+    "email": "emily.rodriguez@email.com",
+    "phone": "+1 (555) 345-6789",
+    "status": "active",
+    "experience": "experienced",
+    "housingType": "house",
+    "petPreference": "any",
+    "applicationDate": "2024-01-10",
+    "lastContact": "2024-01-22",
+    "address": {
+      "street": "789 Rama IV Road",
+      "city": "Bangkok",
+      "state": "Bangkok",
+      "zipCode": "10500",
+      "country": "Thailand"
+    },
+    "emergencyContact": {
+      "name": "Carlos Rodriguez",
+      "phone": "+1 (555) 345-6790",
+      "relationship": "spouse"
+    },
+    "veterinarianInfo": {
+      "clinicName": "Thonglor Animal Hospital",
+      "doctorName": "Dr. Apinya Thanakit",
+      "phone": "+66 2 345 6789"
+    },
+    "notes": "Animal rescue volunteer, experienced with various species. Flexible on pet type."
+  },
+  {
+    "name": "David Wilson",
+    "email": "david.wilson@email.com",
+    "phone": "+1 (555) 456-7890",
+    "status": "rejected",
+    "experience": "some",
+    "housingType": "apartment",
+    "petPreference": "small dog",
+    "applicationDate": "2024-01-05",
+    "lastContact": "2024-01-12",
+    "address": {
+      "street": "321 Silom Road, Condo Tower A",
+      "city": "Bangkok",
+      "state": "Bangkok",
+      "zipCode": "10500",
+      "country": "Thailand"
+    },
+    "emergencyContact": {
+      "name": "Jennifer Wilson",
+      "phone": "+1 (555) 456-7891",
+      "relationship": "parent"
+    },
+    "notes": "Application rejected due to insufficient time availability for pet care."
+  },
+  {
+    "name": "Lisa Thompson",
+    "email": "lisa.thompson@email.com",
+    "phone": "+1 (555) 567-8901",
+    "status": "approved",
+    "experience": "experienced",
+    "housingType": "house",
+    "petPreference": "cat",
+    "applicationDate": "2024-01-08",
+    "lastContact": "2024-01-25",
+    "address": {
+      "street": "654 Phetchaburi Road",
+      "city": "Bangkok",
+      "state": "Bangkok",
+      "zipCode": "10400",
+      "country": "Thailand"
+    },
+    "emergencyContact": {
+      "name": "Robert Thompson",
+      "phone": "+1 (555) 567-8902",
+      "relationship": "spouse"
+    },
+    "veterinarianInfo": {
+      "clinicName": "Ratchada Veterinary Clinic",
+      "doctorName": "Dr. Niran Petcare",
+      "phone": "+66 2 567 8901"
+    },
+    "notes": "Cat specialist, has adopted 3 cats previously. Excellent references."
+  },
+  {
+    "name": "James Anderson",
+    "email": "james.anderson@email.com",
+    "phone": "+1 (555) 678-9012",
+    "status": "pending",
+    "experience": "some",
+    "housingType": "townhouse",
+    "petPreference": "medium dog",
+    "applicationDate": "2024-01-20",
+    "lastContact": "2024-01-20",
+    "address": {
+      "street": "987 Lat Phrao Road",
+      "city": "Bangkok",
+      "state": "Bangkok",
+      "zipCode": "10230",
+      "country": "Thailand"
+    },
+    "emergencyContact": {
+      "name": "Mary Anderson",
+      "phone": "+1 (555) 678-9013",
+      "relationship": "spouse"
+    },
+    "notes": "Family with two children (ages 8 and 12), looking for a family-friendly dog."
+  },
+  {
+    "name": "Maria Garcia",
+    "email": "maria.garcia@email.com",
+    "phone": "+1 (555) 789-0123",
+    "status": "active",
+    "experience": "first-time",
+    "housingType": "condo",
+    "petPreference": "bird",
+    "applicationDate": "2024-01-22",
+    "lastContact": "2024-01-23",
+    "address": {
+      "street": "147 Asoke Road, Sky Condo 25F",
+      "city": "Bangkok",
+      "state": "Bangkok",
+      "zipCode": "10110",
+      "country": "Thailand"
+    },
+    "emergencyContact": {
+      "name": "Ana Garcia",
+      "phone": "+1 (555) 789-0124",
+      "relationship": "sister"
+    },
+    "notes": "Interested in adopting a small bird, has researched bird care extensively."
+  },
+  {
+    "name": "Robert Kim",
+    "email": "robert.kim@email.com",
+    "phone": "+1 (555) 890-1234",
+    "status": "approved",
+    "experience": "experienced",
+    "housingType": "house",
+    "petPreference": "large dog",
+    "applicationDate": "2024-01-12",
+    "lastContact": "2024-01-24",
+    "address": {
+      "street": "258 Ratchadaphisek Road",
+      "city": "Bangkok",
+      "state": "Bangkok",
+      "zipCode": "10310",
+      "country": "Thailand"
+    },
+    "emergencyContact": {
+      "name": "Susan Kim",
+      "phone": "+1 (555) 890-1235",
+      "relationship": "spouse"
+    },
+    "veterinarianInfo": {
+      "clinicName": "Huai Khwang Pet Hospital",
+      "doctorName": "Dr. Prasert Animalcare",
+      "phone": "+66 2 890 1234"
+    },
+    "notes": "Experienced with large breed dogs, has a secure yard and active lifestyle."
+  },
+  {
+    "name": "Jennifer Lee",
+    "email": "jennifer.lee@email.com",
+    "phone": "+1 (555) 901-2345",
+    "status": "pending",
+    "experience": "some",
+    "housingType": "apartment",
+    "petPreference": "rabbit",
+    "applicationDate": "2024-01-25",
+    "lastContact": "2024-01-25",
+    "address": {
+      "street": "369 Phra Ram 9 Road, Unit 12C",
+      "city": "Bangkok",
+      "state": "Bangkok",
+      "zipCode": "10320",
+      "country": "Thailand"
+    },
+    "emergencyContact": {
+      "name": "Daniel Lee",
+      "phone": "+1 (555) 901-2346",
+      "relationship": "spouse"
+    },
+    "notes": "Interested in adopting a rabbit, has experience with small pets."
+  },
+  {
+    "name": "Thomas Brown",
+    "email": "thomas.brown@email.com",
+    "phone": "+1 (555) 012-3456",
+    "status": "active",
+    "experience": "experienced",
+    "housingType": "house",
+    "petPreference": "senior dog",
+    "applicationDate": "2024-01-14",
+    "lastContact": "2024-01-21",
+    "address": {
+      "street": "741 Kaset-Nawamin Road",
+      "city": "Bangkok",
+      "state": "Bangkok",
+      "zipCode": "10230",
+      "country": "Thailand"
+    },
+    "emergencyContact": {
+      "name": "Patricia Brown",
+      "phone": "+1 (555) 012-3457",
+      "relationship": "spouse"
+    },
+    "veterinarianInfo": {
+      "clinicName": "Nawamin Animal Care",
+      "doctorName": "Dr. Siriporn Vetcare",
+      "phone": "+66 2 012 3456"
+    },
+    "notes": "Specializes in caring for senior dogs, retired couple with lots of time and experience."
+  }
+]
