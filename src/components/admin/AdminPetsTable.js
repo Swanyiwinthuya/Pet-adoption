@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 
-export default function AdminPetsTable({ pets = [], onEditPet, onDeletePet }) {
+export default function AdminPetsTable({ pets = [], searchTerm = '', filterAnimal = 'all', filterStatus = 'all', onEditPet, onDeletePet }) {
   const getStatusBadge = (status) => {
     const badges = {
       available: 'bg-green-100 text-green-800',
@@ -11,6 +11,20 @@ export default function AdminPetsTable({ pets = [], onEditPet, onDeletePet }) {
     };
     return badges[status] || 'bg-gray-100 text-gray-800';
   };
+
+  // Filter pets based on search and filters
+  const filteredPets = pets.filter(pet => {
+    const matchesSearch = !searchTerm || 
+      pet.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      pet.breed.toLowerCase().includes(searchTerm.toLowerCase());
+    
+    const matchesAnimal = filterAnimal === 'all' || pet.animal === filterAnimal;
+    
+    // For now, assume all pets are available (you can add status field later)
+    const matchesStatus = filterStatus === 'all' || 'available' === filterStatus;
+    
+    return matchesSearch && matchesAnimal && matchesStatus;
+  });
 
   return (
     <div className="overflow-hidden">
@@ -49,7 +63,7 @@ export default function AdminPetsTable({ pets = [], onEditPet, onDeletePet }) {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {pets.length === 0 ? (
+            {filteredPets.length === 0 ? (
               <tr>
                 <td colSpan="7" className="px-6 py-12 text-center">
                   <div className="text-gray-400 text-6xl mb-4">🐕</div>
@@ -58,8 +72,8 @@ export default function AdminPetsTable({ pets = [], onEditPet, onDeletePet }) {
                 </td>
               </tr>
             ) : (
-              pets.map((pet) => (
-                <tr key={pet.id} className="hover:bg-gray-50">
+              filteredPets.map((pet) => (
+                <tr key={pet._id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex items-center">
                       <div className="flex-shrink-0 h-10 w-10">
@@ -87,12 +101,12 @@ export default function AdminPetsTable({ pets = [], onEditPet, onDeletePet }) {
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(pet.status)}`}>
-                      {pet.status}
+                    <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(pet.status || 'available')}`}>
+                      {pet.status || 'available'}
                     </span>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {pet.createdAt}
+                    {new Date(pet.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                     <div className="flex justify-end space-x-2">
@@ -103,7 +117,7 @@ export default function AdminPetsTable({ pets = [], onEditPet, onDeletePet }) {
                         Edit
                       </button>
                       <button
-                        onClick={() => onDeletePet(pet.id)}
+                        onClick={() => onDeletePet(pet._id)}
                         className="text-red-600 hover:text-red-900"
                       >
                         Delete
