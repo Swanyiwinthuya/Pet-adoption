@@ -1,77 +1,57 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useMemo } from 'react';
+import { useSession, signIn, signOut } from 'next-auth/react';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [user, setUser] = useState({
-    id: 'demo-user-123',
-    name: 'Demo User',
-    email: 'demo@example.com',
-    role: 'admin'
-  });
+  const { data: session, status } = useSession();
 
-  // Mock login function
-  const login = async (credentials) => {
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // For demo purposes, always return success
-    return { success: true };
-  };
+  const value = useMemo(() => ({
+    user: session?.user || null,
+    isAuthenticated: status === 'authenticated',
+    isLoading: status === 'loading',
+    isAdmin: () => session?.user?.role === 'admin',
 
-  // Mock register function
-  const register = async (userData) => {
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // For demo purposes, always return success
-    return { success: true };
-  };
+    // wrappers
+    login: async ({ email, password }) => {
+      const res = await signIn('credentials', {
+        redirect: false,
+        email,
+        password,
+      });
+      return res; // { ok, error, status, url }
+    },
 
-  // Mock logout function
-  const logout = async () => {
-    // For demo purposes, just log the action
-    console.log('User logged out');
-  };
+    register: async (payload) => {
+      const res = await fetch('/api/users', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      return res.json();
+    },
 
-  // Check if user is admin
-  const isAdmin = () => {
-    return user?.role === 'admin';
-  };
+    logout: async () => {
+      await signOut({ callbackUrl: '/' });
+    },
 
-  // Update user profile
-  const updateProfile = async (profileData) => {
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // For demo purposes, always return success
-    return { success: true, user: { ...user, ...profileData } };
-  };
-
-  const value = {
-    user,
-    isLoading,
-    isAuthenticated: true, // Always authenticated for demo
-    login,
-    register,
-    logout,
-    isAdmin,
-    updateProfile,
-  };
+    updateProfile: async (id, body) => {
+      const res = await fetch(`/api/users/${id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+      });
+      return res.json();
+    },
+  }), [session, status]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
-// useAuth hook
 export function useAuth() {
-  const context = useContext(AuthContext);
-  
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  
-  return context;
+  const ctx = useContext(AuthContext);
+  if (!ctx) throw new Error('useAuth must be used within an AuthProvider');
+  return ctx;
 }
