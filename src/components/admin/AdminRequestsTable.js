@@ -1,153 +1,179 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function AdminRequestsTable() {
-  const [requests, setRequests] = useState([
-    {
-      id: 1,
-      userName: 'John Doe',
-      phoneNumber: '+1234567890',
-      petName: 'Max',
-      petBreed: 'Golden Retriever',
-      pickupDate: '2024-01-20',
-      status: 'pending',
-      createdAt: '2024-01-15',
-      message: 'I have experience with dogs and a large yard.',
-    },
-    {
-      id: 2,
-      userName: 'Jane Smith',
-      phoneNumber: '+1234567891',
-      petName: 'Luna',
-      petBreed: 'Domestic Shorthair',
-      pickupDate: '2024-01-22',
-      status: 'approved',
-      createdAt: '2024-01-14',
-      message: 'I live in a quiet apartment perfect for cats.',
-    },
-    {
-      id: 3,
-      userName: 'Bob Johnson',
-      phoneNumber: '+1234567892',
-      petName: 'Buddy',
-      petBreed: 'Labrador',
-      pickupDate: '2024-01-25',
-      status: 'rejected',
-      createdAt: '2024-01-13',
-      message: 'I have a small apartment and work long hours.',
-    },
-  ]);
+  const [requests, setRequests] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [status, setStatus] = useState('all');
+  const [banner, setBanner] = useState(null); // { type: 'success'|'error', text: string }
 
-  const getStatusBadge = (status) => {
-    const badges = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      approved: 'bg-green-100 text-green-800',
-      rejected: 'bg-red-100 text-red-800',
-      completed: 'bg-blue-100 text-blue-800',
-    };
-    return badges[status] || 'bg-gray-100 text-gray-800';
+  const fetchRequests = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (status !== 'all') params.set('status', status);
+      const res = await fetch(`/api/requests?${params.toString()}`);
+      const data = await res.json();
+      setRequests(Array.isArray(data.requests) ? data.requests : []);
+    } catch {
+      setRequests([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchRequests(); }, [status]);
+
+  const filtered = useMemo(() => {
+    const t = searchTerm.trim().toLowerCase();
+    if (!t) return requests;
+    return requests.filter(r => {
+      const hay = [
+        r.userName, r.phoneNumber, r.pet?.name, r.pet?.breed, r.message
+      ].filter(Boolean).join(' ').toLowerCase();
+      return hay.includes(t);
+    });
+  }, [requests, searchTerm]);
+
+  const flash = (type, text) => {
+    setBanner({ type, text });
+    setTimeout(() => setBanner(null), 2500);
+  };
+
+  const updateStatus = async (id, newStatus) => {
+    // Optimistic update
+    const prev = requests;
+    setRequests(prev.map(r => r._id === id ? { ...r, status: newStatus } : r));
+
+    const res = await fetch(`/api/requests/${id}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ status: newStatus }),
+    });
+
+    if (res.ok) {
+      flash('success', newStatus === 'approved' ? 'Request approved' : 'Request rejected');
+      // Re-fetch to keep everything consistent
+      fetchRequests();
+    } else {
+      // Revert on error
+      setRequests(prev);
+      const e = await res.json().catch(()=> ({}));
+      flash('error', e.error || 'Failed to update status');
+    }
   };
 
   return (
-    <div className="overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-200">
-        <h3 className="text-lg font-medium text-gray-900">All Adoption Requests</h3>
-        <p className="mt-1 text-sm text-gray-500">
-          Review and process adoption applications
-        </p>
+    <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white">
+      <div className="flex flex-wrap items-center gap-2 border-b px-6 py-4">
+        <h3 className="mr-auto text-lg font-semibold text-zinc-900">All Adoption Requests</h3>
+        <input
+          className="h-10 rounded-lg border border-zinc-300 px-3 text-sm"
+          placeholder="Search by name, pet, breed…"
+          value={searchTerm}
+          onChange={(e)=> setSearchTerm(e.target.value)}
+        />
+        <select
+          className="h-10 rounded-lg border border-zinc-300 px-3 text-sm"
+          value={status}
+          onChange={(e)=> setStatus(e.target.value)}
+        >
+          <option value="all">All</option>
+          <option value="pending">Pending</option>
+          <option value="approved">Approved</option>
+          <option value="rejected">Rejected</option>
+        </select>
+        <button
+          onClick={fetchRequests}
+          className="h-10 rounded-lg border border-zinc-300 bg-white px-3 text-sm hover:bg-zinc-50"
+        >
+          Refresh
+        </button>
       </div>
-      
-      <div className="overflow-x-auto">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Applicant
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Pet
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Pickup Date
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Status
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Submitted
-              </th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {requests.map((request) => (
-              <tr key={request.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 h-10 w-10">
-                      <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-                        <span className="text-gray-700 font-medium text-sm">
-                          {request.userName.charAt(0)}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">{request.userName}</div>
-                      <div className="text-sm text-gray-500">{request.phoneNumber}</div>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm font-medium text-gray-900">{request.petName}</div>
-                  <div className="text-sm text-gray-500">{request.petBreed}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {request.pickupDate}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusBadge(request.status)}`}>
-                    {request.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {request.createdAt}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <div className="flex justify-end space-x-2">
-                    {request.status === 'pending' && (
-                      <>
-                        <button
-                          className="text-green-600 hover:text-green-900"
-                        >
-                          Approve (NextAuth)
-                        </button>
-                        <button
-                          className="text-red-600 hover:text-red-900"
-                        >
-                          Reject (NextAuth)
-                        </button>
-                      </>
-                    )}
-                    <button
-                      className="text-blue-600 hover:text-blue-900"
-                    >
-                      View (NextAuth)
-                    </button>
-                    <button
-                      className="text-red-600 hover:text-red-900"
-                    >
-                      Delete (NextAuth)
-                    </button>
-                  </div>
-                </td>
+
+      {banner && (
+        <div className={`mx-6 mt-4 rounded-lg p-3 text-sm ${
+          banner.type === 'success'
+            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+            : 'bg-rose-50 text-rose-700 border border-rose-200'
+        }`}>
+          {banner.text}
+        </div>
+      )}
+
+      {loading ? (
+        <div className="p-6 text-zinc-600">Loading…</div>
+      ) : filtered.length === 0 ? (
+        <div className="p-6 text-zinc-600">No requests.</div>
+      ) : (
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-zinc-200">
+            <thead className="bg-zinc-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Applicant</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Contact</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Pet</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Pickup</th>
+                <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Status</th>
+                <th className="px-6 py-3" />
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody className="divide-y divide-zinc-200 bg-white">
+              {filtered.map((r) => (
+                <tr key={r._id} className="hover:bg-zinc-50">
+                  <td className="px-6 py-4">
+                    <div className="font-medium text-zinc-900">{r.userName}</div>
+                    {r.message && <div className="text-sm text-zinc-600">{r.message}</div>}
+                  </td>
+                  <td className="px-6 py-4 text-sm text-zinc-700">{r.phoneNumber}</td>
+                  <td className="px-6 py-4">
+                    <div className="font-medium text-zinc-900">{r.pet?.name || '—'}</div>
+                    <div className="text-sm text-zinc-600">{r.pet?.animal} • {r.pet?.breed}</div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-zinc-700">
+                    {new Date(r.pickupDate).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className={'rounded px-2 py-1 text-xs ' + (
+                      r.status === 'approved' ? 'bg-emerald-100 text-emerald-700' :
+                      r.status === 'rejected' ? 'bg-rose-100 text-rose-700' :
+                      'bg-amber-100 text-amber-700'
+                    )}>
+                      {r.status}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 text-right">
+                    <div className="flex justify-end gap-2">
+                      <button
+                        className={`rounded px-3 py-1 text-sm text-white ${
+                          r.status === 'approved' ? 'bg-emerald-400 cursor-default' : 'bg-emerald-600 hover:bg-emerald-500'
+                        }`}
+                        onClick={() => r.status !== 'approved' && updateStatus(r._id, 'approved')}
+                        disabled={r.status === 'approved'}
+                        title={r.status === 'approved' ? 'Accepted' : 'Approve'}
+                      >
+                        {r.status === 'approved' ? 'Accepted ✓' : 'Approve'}
+                      </button>
+                      <button
+                        className={`rounded px-3 py-1 text-sm text-white ${
+                          r.status === 'rejected' ? 'bg-rose-400 cursor-default' : 'bg-rose-600 hover:bg-rose-500'
+                        }`}
+                        onClick={() => r.status !== 'rejected' && updateStatus(r._id, 'rejected')}
+                        disabled={r.status === 'rejected'}
+                        title={r.status === 'rejected' ? 'Rejected' : 'Reject'}
+                      >
+                        {r.status === 'rejected' ? 'Rejected ✗' : 'Reject'}
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

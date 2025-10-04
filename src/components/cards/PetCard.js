@@ -3,64 +3,60 @@ import Badge from '../ui/Badge';
 import Button from '../ui/Button';
 
 export default function PetCard({ pet, onViewDetails, onAdopt }) {
-  const getStatusBadge = (isAvailable) => {
-    return isAvailable ? (
-      <Badge variant="success">Available</Badge>
-    ) : (
-      <Badge variant="warning">Adopted</Badge>
-    );
-  };
+  const petId = pet.id || pet._id;
+  const available = pet.isAvailable !== false;
+
+  const Status = () => (
+    available
+      ? <span className="rounded-full bg-emerald-500/15 px-2.5 py-1 text-xs font-medium text-emerald-300">Available</span>
+      : <span className="rounded-full bg-amber-500/15 px-2.5 py-1 text-xs font-medium text-amber-300">Adopted</span>
+  );
 
   return (
-    <Card className="hover:shadow-lg transition-shadow duration-200">
-      <div className="aspect-w-16 aspect-h-9">
+    <div className="group rounded-2xl border border-zinc-800/80 bg-zinc-900/70 shadow-[0_0_0_1px_rgba(255,255,255,0.03)] backdrop-blur transition-all hover:-translate-y-1 hover:shadow-2xl">
+      <div className="relative overflow-hidden rounded-t-2xl">
         <img
-          src={pet.image || '/placeholder-pet.jpg'}
+          src={pet.photo || '/placeholder.png'}
           alt={pet.name}
-          className="w-full h-48 object-cover rounded-t-lg"
+          className="h-44 w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]"
         />
+        <div className="absolute left-3 top-3">
+          <Status />
+        </div>
       </div>
-      
-      <CardBody>
-        <div className="flex justify-between items-start mb-2">
-          <h3 className="text-lg font-semibold text-gray-900">{pet.name}</h3>
-          {getStatusBadge(pet.isAvailable)}
+
+      <div className="p-4">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold text-white">{pet.name}</h3>
         </div>
-        
-        <div className="space-y-1 text-sm text-gray-600 mb-4">
-          <p><span className="font-medium">Breed:</span> {pet.breed}</p>
-          <p><span className="font-medium">Age:</span> {pet.age} years old</p>
-          <p><span className="font-medium">Species:</span> {pet.species}</p>
-          <p><span className="font-medium">Health:</span> {pet.healthStatus}</p>
-        </div>
-        
-        {pet.description && (
-          <p className="text-sm text-gray-700 mb-4 line-clamp-3">
-            {pet.description}
-          </p>
-        )}
-        
-        <div className="flex space-x-2">
-          <Button
-            variant="secondary"
-            size="sm"
-            onClick={() => onViewDetails(pet.id)}
-            className="flex-1"
+        <p className="mt-1 text-sm text-zinc-400">
+          {pet.animal} • {pet.breed} • {pet.age} yr{Number(pet.age) === 1 ? '' : 's'}
+        </p>
+
+        <div className="mt-4 grid grid-cols-2 gap-2">
+          <button
+            onClick={() => onViewDetails(petId)}
+            className="rounded-xl border border-zinc-700 bg-zinc-900 px-3 py-2 text-sm text-zinc-100 hover:bg-zinc-800 disabled:opacity-50"
           >
             View Details
-          </Button>
-          {pet.isAvailable && (
-            <Button
-              variant="primary"
-              size="sm"
-              onClick={() => onAdopt(pet.id)}
-              className="flex-1"
+          </button>
+          {available ? (
+            <button
+              onClick={() => onAdopt(petId)}
+              className="rounded-xl bg-gradient-to-r from-indigo-600 to-pink-600 px-3 py-2 text-sm font-medium text-white shadow hover:opacity-95"
             >
               Adopt Me
-            </Button>
+            </button>
+          ) : (
+            <button
+              disabled
+              className="rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm text-zinc-500"
+            >
+              Not Available
+            </button>
           )}
         </div>
-      </CardBody>
-    </Card>
+      </div>
+    </div>
   );
 }

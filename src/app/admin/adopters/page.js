@@ -1,110 +1,117 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import Button from '../../../components/ui/Button';
-import AdoptersTable from '../../../components/admin/AdoptersTable';
+import { useEffect, useMemo, useState } from 'react';
 
 export default function AdminAdoptersPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
-  const [filterExperience, setFilterExperience] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [requests, setRequests] = useState([]);
+  const [search, setSearch] = useState('');
+
+  const fetchApproved = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/requests?status=approved');
+      const data = await res.json();
+      setRequests(Array.isArray(data.requests) ? data.requests : []);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchApproved(); }, []);
+
+  // Build adopters from approved requests
+  const adopters = useMemo(() => {
+    const map = new Map();
+    for (const r of requests) {
+      const key = `${r.userName}||${r.phoneNumber}`;
+      const existing = map.get(key) || { userName: r.userName, phoneNumber: r.phoneNumber, requests: [] };
+      existing.requests.push(r);
+      map.set(key, existing);
+    }
+    let arr = Array.from(map.values());
+    const q = search.trim().toLowerCase();
+    if (q) {
+      arr = arr.filter(a =>
+        (`${a.userName} ${a.phoneNumber} ${a.requests.map(x=>x.pet?.name).join(' ')}`).toLowerCase().includes(q)
+      );
+    }
+    // sort latest first by most recent request date
+    arr.sort((a, b) => {
+      const da = new Date(a.requests[0]?.updatedAt || a.requests[0]?.createdAt || 0);
+      const db = new Date(b.requests[0]?.updatedAt || b.requests[0]?.createdAt || 0);
+      return db - da;
+    });
+    return arr;
+  }, [requests, search]);
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Manage Adopters</h1>
-          <p className="text-gray-600 mt-1">View and manage all potential pet adopters</p>
+          <h1 className="text-2xl font-bold text-zinc-900">Manage Adopters</h1>
+          <p className="text-sm text-zinc-500">View and manage people approved to adopt</p>
         </div>
-        <Link href="/admin/adopters/new">
-          <Button>➕ Add New Adopter</Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          <button onClick={fetchApproved} className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm hover:bg-zinc-50">
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Filters</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
-            <input
-              type="text"
-              placeholder="Search by name, email, phone..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="all">All Status</option>
-              <option value="active">Active</option>
-              <option value="approved">Approved</option>
-              <option value="pending">Pending Review</option>
-              <option value="rejected">Rejected</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Experience</label>
-            <select
-              value={filterExperience}
-              onChange={(e) => setFilterExperience(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="all">All Experience Levels</option>
-              <option value="first-time">First Time</option>
-              <option value="some">Some Experience</option>
-              <option value="experienced">Experienced</option>
-            </select>
-          </div>
-          <div className="flex items-end">
-            <Button 
-              onClick={() => {
-                setSearchTerm('');
-                setFilterStatus('all');
-                setFilterExperience('all');
-              }}
-              variant="secondary"
-            >
-              Clear Filters
-            </Button>
-          </div>
+      <div className="rounded-xl border border-zinc-200 bg-white p-4">
+        <div className="grid gap-3 md:grid-cols-[1fr,160px]">
+          <input
+            className="h-10 rounded-lg border border-zinc-300 px-3 text-sm"
+            placeholder="Search by name, phone, pet…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+          <button
+            onClick={() => setSearch('')}
+            className="h-10 rounded-lg border border-zinc-300 bg-white px-3 text-sm hover:bg-zinc-50"
+          >
+            Clear Filters
+          </button>
         </div>
       </div>
 
-      {/* Adopters Table */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <AdoptersTable 
-          searchTerm={searchTerm}
-          filterStatus={filterStatus}
-          filterExperience={filterExperience}
-        />
-      </div>
-
-      {/* Quick Actions */}
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-        <div className="flex flex-wrap gap-3">
-          <Link href="/admin/adopters/new">
-            <Button>➕ Add New Adopter</Button>
-          </Link>
-          <Link href="/admin/adopters/import">
-            <Button variant="secondary">📥 Import Adopters</Button>
-          </Link>
-          <Link href="/admin/adopters/export">
-            <Button variant="secondary">📤 Export Data</Button>
-          </Link>
-          <Link href="/admin/adopters/bulk-approve">
-            <Button variant="secondary">✅ Bulk Approve</Button>
-          </Link>
-        </div>
+      {/* Table */}
+      <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white">
+        <table className="min-w-full divide-y divide-zinc-200">
+          <thead className="bg-zinc-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Adopter</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Approved Pets</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Next Pickup</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-zinc-200 bg-white">
+            {loading ? (
+              <tr><td className="px-6 py-4 text-zinc-600" colSpan={3}>Loading…</td></tr>
+            ) : adopters.length === 0 ? (
+              <tr><td className="px-6 py-4 text-zinc-600" colSpan={3}>No adopters yet.</td></tr>
+            ) : (
+              adopters.map((a, i) => {
+                const nextPickup = a.requests
+                  .map(r => new Date(r.pickupDate))
+                  .sort((x, y) => x - y)[0];
+                const petList = a.requests.map(r => `${r.pet?.name || 'Pet'} (${r.pet?.animal || ''} ${r.pet?.breed || ''})`).join(', ');
+                return (
+                  <tr key={i} className="hover:bg-zinc-50">
+                    <td className="px-6 py-4">
+                      <div className="font-medium text-zinc-900">{a.userName}</div>
+                      <div className="text-sm text-zinc-600">{a.phoneNumber}</div>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-zinc-700">{petList}</td>
+                    <td className="px-6 py-4 text-sm text-zinc-700">{nextPickup ? nextPickup.toLocaleDateString() : '—'}</td>
+                  </tr>
+                );
+              })
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

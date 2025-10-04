@@ -2,38 +2,59 @@
 
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
+import { usePathname } from 'next/navigation';
 
 export default function Header() {
   const { data: session, status } = useSession();
+  const pathname = usePathname();
   const isAuthed = status === 'authenticated';
   const isAdmin = session?.user?.role === 'admin';
 
-  return (
-    <header className="border-b bg-white">
-      <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-        <Link href="/" className="text-xl font-bold">Pet Adoption</Link>
+  const NavLink = ({ href, children }) => {
+    const active = pathname === href;
+    return (
+      <Link
+        href={href}
+        className={
+          'rounded-lg px-3 py-2 text-sm transition-colors ' +
+          (active
+            ? 'bg-zinc-800 text-white'
+            : 'text-zinc-200 hover:text-white hover:bg-zinc-800/60')
+        }
+      >
+        {children}
+      </Link>
+    );
+  };
 
-        <nav className="flex items-center gap-4">
-          <Link href="/pets" className="hover:underline">Find Pets</Link>
-          <Link href="/about" className="hover:underline">About</Link>
-          <Link href="/contact" className="hover:underline">Contact</Link>
+  return (
+    <header className="sticky top-0 z-40 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
+      <div className="container mx-auto flex items-center justify-between px-4 py-3">
+        <Link href="/" className="text-lg font-extrabold tracking-tight text-white">
+          Pet <span className="text-indigo-400">Adoption</span>
+        </Link>
+
+        <nav className="flex items-center gap-1">
+          <NavLink href="/pets">Find Pets</NavLink>
+          <NavLink href="/about">About</NavLink>
+          <NavLink href="/contact">Contact</NavLink>
+
+          {isAuthed && (
+            isAdmin ? <NavLink href="/admin">Admin</NavLink> : <NavLink href="/dashboard">Dashboard</NavLink>
+          )}
 
           {!isAuthed ? (
             <>
-              <Link href="/login" className="hover:underline">Login</Link>
-              <Link href="/register" className="rounded bg-blue-600 text-white px-3 py-1">Register</Link>
+              <NavLink href="/login">Login</NavLink>
+              <NavLink href="/register">Register</NavLink>
             </>
           ) : (
-            <>
-              {isAdmin ? (
-                <Link href="/admin" className="hover:underline">Admin</Link>
-              ) : (
-                <Link href="/dashboard" className="hover:underline">Dashboard</Link>
-              )}
-              <button onClick={() => signOut({ callbackUrl: '/' })} className="text-red-600 hover:underline">
-                Logout
-              </button>
-            </>
+            <button
+              onClick={() => signOut({ callbackUrl: '/' })}
+              className="ml-1 rounded-lg bg-rose-600 px-3 py-2 text-sm font-medium text-white hover:bg-rose-500"
+            >
+              Logout
+            </button>
           )}
         </nav>
       </div>

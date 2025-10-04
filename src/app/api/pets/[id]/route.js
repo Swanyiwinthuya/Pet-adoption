@@ -7,7 +7,7 @@ export async function GET(request, { params }) {
   try {
     await connectDB();
     
-    const { id } = params;
+    const { id } = await params; 
     
     const pet = await Pet.findById(id).lean();
     
@@ -34,7 +34,7 @@ export async function PUT(request, { params }) {
   try {
     await connectDB();
     
-    const { id } = params;
+    const { id } = await params; 
     const body = await request.json();
     
     // Check if pet exists
@@ -101,7 +101,7 @@ export async function DELETE(request, { params }) {
   try {
     await connectDB();
     
-    const { id } = params;
+    const { id } = await params; 
     
     // Check if pet exists
     const existingPet = await Pet.findById(id);

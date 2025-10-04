@@ -1,109 +1,102 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
-import Button from '../../../components/ui/Button';
-import AdminUsersTable from '../../../components/admin/AdminUsersTable';
+import { useEffect, useState } from 'react';
 
 export default function AdminUsersPage() {
-  const [searchTerm, setSearchTerm] = useState('');
-  const [filterRole, setFilterRole] = useState('all');
-  const [filterStatus, setFilterStatus] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [users, setUsers] = useState([]);
+  const [search, setSearch] = useState('');
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch('/api/users');
+      const data = await res.json();
+      setUsers(Array.isArray(data.users) ? data.users : []);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => { fetchUsers(); }, []);
+
+  const filtered = users.filter(u => {
+    const q = search.trim().toLowerCase();
+    if (!q) return true;
+    return [
+      u.name, u.email, u.phone, u.role, u.status,
+    ].filter(Boolean).join(' ').toLowerCase().includes(q);
+  });
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Manage Users</h1>
-          <p className="text-gray-600 mt-1">View and manage all user accounts in the system</p>
+          <h1 className="text-2xl font-bold text-zinc-900">Manage Users</h1>
+          <p className="text-sm text-zinc-500">View and manage user accounts in the system</p>
         </div>
-        <Link href="/admin/users/new">
-          <Button>➕ Add New User</Button>
-        </Link>
+        <div className="flex items-center gap-2">
+          <button onClick={fetchUsers} className="rounded-lg border border-zinc-300 bg-white px-3 py-2 text-sm hover:bg-zinc-50">
+            Refresh
+          </button>
+        </div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Filters</h2>
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
-            <input
-              type="text"
-              placeholder="Search by name, email..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
-            <select
-              value={filterRole}
-              onChange={(e) => setFilterRole(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="all">All Roles</option>
-              <option value="admin">Admin</option>
-              <option value="user">User</option>
-              <option value="moderator">Moderator</option>
-            </select>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
-            <select
-              value={filterStatus}
-              onChange={(e) => setFilterStatus(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="all">All Status</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-              <option value="suspended">Suspended</option>
-            </select>
-          </div>
-          <div className="flex items-end">
-            <Button 
-              onClick={() => {
-                setSearchTerm('');
-                setFilterRole('all');
-                setFilterStatus('all');
-              }}
-              variant="secondary"
-            >
-              Clear Filters
-            </Button>
-          </div>
+      <div className="rounded-xl border border-zinc-200 bg-white p-4">
+        <div className="grid gap-3 md:grid-cols-[1fr,160px]">
+          <input
+            className="h-10 rounded-lg border border-zinc-300 px-3 text-sm"
+            placeholder="Search by name, email, phone…"
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+          />
+          <button
+            onClick={() => setSearch('')}
+            className="h-10 rounded-lg border border-zinc-300 bg-white px-3 text-sm hover:bg-zinc-50"
+          >
+            Clear Filters
+          </button>
         </div>
       </div>
 
-      {/* Users Table */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200">
-        <AdminUsersTable 
-          searchTerm={searchTerm}
-          filterRole={filterRole}
-          filterStatus={filterStatus}
-        />
-      </div>
-
-      {/* Quick Actions */}
-      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
-        <div className="flex flex-wrap gap-3">
-          <Link href="/admin/users/new">
-            <Button>➕ Add New User</Button>
-          </Link>
-          <Link href="/admin/users/import">
-            <Button variant="secondary">📥 Import Users</Button>
-          </Link>
-          <Link href="/admin/users/export">
-            <Button variant="secondary">📤 Export Data</Button>
-          </Link>
-          <Link href="/admin/users/bulk-actions">
-            <Button variant="secondary">⚡ Bulk Actions</Button>
-          </Link>
-        </div>
+      {/* Table */}
+      <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white">
+        <table className="min-w-full divide-y divide-zinc-200">
+          <thead className="bg-zinc-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">User</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Contact</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Role</th>
+              <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-zinc-500">Status</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-zinc-200 bg-white">
+            {loading ? (
+              <tr><td className="px-6 py-4 text-zinc-600" colSpan={4}>Loading…</td></tr>
+            ) : filtered.length === 0 ? (
+              <tr><td className="px-6 py-4 text-zinc-600" colSpan={4}>No users.</td></tr>
+            ) : (
+              filtered.map((u) => (
+                <tr key={u._id || u.email} className="hover:bg-zinc-50">
+                  <td className="px-6 py-4">
+                    <div className="font-medium text-zinc-900">{u.name || '(no name)'}</div>
+                    <div className="text-sm text-zinc-600">{u.email}</div>
+                  </td>
+                  <td className="px-6 py-4 text-sm text-zinc-700">{u.phone || '—'}</td>
+                  <td className="px-6 py-4 text-sm text-zinc-700">{u.role || 'user'}</td>
+                  <td className="px-6 py-4">
+                    <span className={'rounded px-2 py-1 text-xs ' + (
+                      u.status === 'inactive' ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'
+                    )}>
+                      {u.status === 'inactive' ? 'inactive' : 'active'}
+                    </span>
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );
