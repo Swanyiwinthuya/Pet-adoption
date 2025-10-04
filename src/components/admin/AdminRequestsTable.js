@@ -7,14 +7,14 @@ export default function AdminRequestsTable() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [status, setStatus] = useState('all');
-  const [banner, setBanner] = useState(null); // { type: 'success'|'error', text: string }
+  const [banner, setBanner] = useState(null); // { type, text }
 
   const fetchRequests = async () => {
     setLoading(true);
     try {
-      const params = new URLSearchParams();
-      if (status !== 'all') params.set('status', status);
-      const res = await fetch(`/api/requests?${params.toString()}`);
+      const qs = new URLSearchParams();
+      if (status !== 'all') qs.set('status', status);
+      const res = await fetch(`/api/requests?${qs.toString()}`);
       const data = await res.json();
       setRequests(Array.isArray(data.requests) ? data.requests : []);
     } catch {
@@ -39,11 +39,11 @@ export default function AdminRequestsTable() {
 
   const flash = (type, text) => {
     setBanner({ type, text });
-    setTimeout(() => setBanner(null), 2500);
+    setTimeout(() => setBanner(null), 2200);
   };
 
   const updateStatus = async (id, newStatus) => {
-    // Optimistic update
+    // optimistic row update
     const prev = requests;
     setRequests(prev.map(r => r._id === id ? { ...r, status: newStatus } : r));
 
@@ -54,16 +54,27 @@ export default function AdminRequestsTable() {
     });
 
     if (res.ok) {
-      flash('success', newStatus === 'approved' ? 'Request approved' : 'Request rejected');
-      // Re-fetch to keep everything consistent
-      fetchRequests();
+      flash('success', newStatus === 'approved' ? 'Marked as Completed' : 'Marked as Rejected');
+      fetchRequests(); // keep in sync with DB
     } else {
-      // Revert on error
-      setRequests(prev);
+      setRequests(prev); // revert
       const e = await res.json().catch(()=> ({}));
       flash('error', e.error || 'Failed to update status');
     }
   };
+
+  const StatusPill = ({ s }) => (
+    <span className={
+      'rounded px-2 py-1 text-xs ' +
+      (s === 'approved'
+        ? 'bg-emerald-100 text-emerald-700'
+        : s === 'rejected'
+        ? 'bg-rose-100 text-rose-700'
+        : 'bg-amber-100 text-amber-700')
+    }>
+      {s === 'approved' ? 'Completed' : s === 'rejected' ? 'Rejected' : 'Pending'}
+    </span>
+  );
 
   return (
     <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white">
@@ -82,7 +93,7 @@ export default function AdminRequestsTable() {
         >
           <option value="all">All</option>
           <option value="pending">Pending</option>
-          <option value="approved">Approved</option>
+          <option value="approved">Completed</option>
           <option value="rejected">Rejected</option>
         </select>
         <button
@@ -121,55 +132,46 @@ export default function AdminRequestsTable() {
               </tr>
             </thead>
             <tbody className="divide-y divide-zinc-200 bg-white">
-              {filtered.map((r) => (
-                <tr key={r._id} className="hover:bg-zinc-50">
-                  <td className="px-6 py-4">
-                    <div className="font-medium text-zinc-900">{r.userName}</div>
-                    {r.message && <div className="text-sm text-zinc-600">{r.message}</div>}
-                  </td>
-                  <td className="px-6 py-4 text-sm text-zinc-700">{r.phoneNumber}</td>
-                  <td className="px-6 py-4">
-                    <div className="font-medium text-zinc-900">{r.pet?.name || '—'}</div>
-                    <div className="text-sm text-zinc-600">{r.pet?.animal} • {r.pet?.breed}</div>
-                  </td>
-                  <td className="px-6 py-4 text-sm text-zinc-700">
-                    {new Date(r.pickupDate).toLocaleDateString()}
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={'rounded px-2 py-1 text-xs ' + (
-                      r.status === 'approved' ? 'bg-emerald-100 text-emerald-700' :
-                      r.status === 'rejected' ? 'bg-rose-100 text-rose-700' :
-                      'bg-amber-100 text-amber-700'
-                    )}>
-                      {r.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex justify-end gap-2">
-                      <button
-                        className={`rounded px-3 py-1 text-sm text-white ${
-                          r.status === 'approved' ? 'bg-emerald-400 cursor-default' : 'bg-emerald-600 hover:bg-emerald-500'
-                        }`}
-                        onClick={() => r.status !== 'approved' && updateStatus(r._id, 'approved')}
-                        disabled={r.status === 'approved'}
-                        title={r.status === 'approved' ? 'Accepted' : 'Approve'}
-                      >
-                        {r.status === 'approved' ? 'Accepted ✓' : 'Approve'}
-                      </button>
-                      <button
-                        className={`rounded px-3 py-1 text-sm text-white ${
-                          r.status === 'rejected' ? 'bg-rose-400 cursor-default' : 'bg-rose-600 hover:bg-rose-500'
-                        }`}
-                        onClick={() => r.status !== 'rejected' && updateStatus(r._id, 'rejected')}
-                        disabled={r.status === 'rejected'}
-                        title={r.status === 'rejected' ? 'Rejected' : 'Reject'}
-                      >
-                        {r.status === 'rejected' ? 'Rejected ✗' : 'Reject'}
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+              {filtered.map((r) => {
+                const isPending = r.status === 'pending';
+                return (
+                  <tr key={r._id} className="hover:bg-zinc-50">
+                    <td className="px-6 py-4">
+                      <div className="font-medium text-zinc-900">{r.userName}</div>
+                      {r.message && <div className="text-sm text-zinc-600">{r.message}</div>}
+                    </td>
+                    <td className="px-6 py-4 text-sm text-zinc-700">{r.phoneNumber}</td>
+                    <td className="px-6 py-4">
+                      <div className="font-medium text-zinc-900">{r.pet?.name || '—'}</div>
+                      <div className="text-sm text-zinc-600">{r.pet?.animal} • {r.pet?.breed}</div>
+                    </td>
+                    <td className="px-6 py-4 text-sm text-zinc-700">
+                      {new Date(r.pickupDate).toLocaleDateString()}
+                    </td>
+                    <td className="px-6 py-4">
+                      <StatusPill s={r.status} />
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      {isPending ? (
+                        <div className="flex justify-end gap-2">
+                          <button
+                            className="rounded bg-emerald-600 px-3 py-1 text-sm text-white hover:bg-emerald-500"
+                            onClick={() => updateStatus(r._id, 'approved')}
+                          >
+                            Approve
+                          </button>
+                          <button
+                            className="rounded bg-rose-600 px-3 py-1 text-sm text-white hover:bg-rose-500"
+                            onClick={() => updateStatus(r._id, 'rejected')}
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      ) : null}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
         </div>

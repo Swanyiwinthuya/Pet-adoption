@@ -92,16 +92,16 @@ export default function AdminDashboardPage() {
       <div className="rounded-2xl border border-zinc-200 bg-white p-5">
         <div className="text-sm font-medium text-zinc-900">Quick Actions</div>
         <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <a href="/admin/pets" className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 hover:bg-zinc-100">
+          <a href="/admin/pets" className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-zinc-700 hover:bg-zinc-100">
             Add / Manage Pets
           </a>
-          <a href="/admin/requests" className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 hover:bg-zinc-100">
+          <a href="/admin/requests" className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-zinc-700 hover:bg-zinc-100">
             Review Requests
           </a>
-          <a href="/admin/users" className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 hover:bg-zinc-100">
+          <a href="/admin/users" className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-zinc-700 hover:bg-zinc-100">
             Manage Users
           </a>
-          <a href="/admin/adopters" className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 hover:bg-zinc-100">
+          <a href="/admin/adopters" className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-zinc-700 hover:bg-zinc-100">
             View Adopters
           </a>
         </div>

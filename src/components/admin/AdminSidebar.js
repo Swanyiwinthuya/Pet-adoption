@@ -2,102 +2,61 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { signOut } from 'next-auth/react';
+import SidebarQuickStats from './SidebarQuickStats';
 
 export default function AdminSidebar() {
   const pathname = usePathname();
 
-  const navigation = [
-    { name: 'Dashboard', href: '/admin', icon: '📊' },
-    { name: 'Pets', href: '/admin/pets', icon: '🐕' },
-    { name: 'Users', href: '/admin/users', icon: '👥' },
-    { name: 'Adoption Requests', href: '/admin/requests', icon: '📋' },
-    { name: 'Adopters', href: '/admin/adopters', icon: '🏠' },
-    { name: 'Settings', href: '/admin/settings', icon: '⚙️' },
-  ];
-
-  // Get current page title
-  const getCurrentPageTitle = () => {
-    const currentPage = navigation.find(item => item.href === pathname);
-    return currentPage ? currentPage.name : 'Admin Panel';
+  const Item = ({ href, children }) => {
+    const active = pathname === href || pathname.startsWith(href + '/');
+    return (
+      <Link
+        href={href}
+        className={
+          'block rounded-xl px-4 py-2.5 text-[15px] transition ' +
+          (active
+            ? 'bg-blue-50 text-blue-600 shadow-[inset_0_0_0_1px_rgba(59,130,246,.25)]'
+            : 'text-zinc-700 hover:bg-zinc-50')
+        }
+      >
+        {children}
+      </Link>
+    );
   };
 
   return (
-    <div className="w-64 bg-white shadow-lg min-h-screen fixed left-0 top-0 z-30">
-      <div className="p-6">
-        {/* Page Title Section */}
-        <div className="mb-6 pb-4 border-b border-gray-200">
-          <h1 className="text-2xl font-bold text-gray-900">Pet Adoption</h1>
-          <p className="text-sm text-gray-600 mt-1">Administration Panel</p>
-          <div className="mt-3">
-            <span className="text-lg font-medium text-blue-600">
-              {getCurrentPageTitle()}
-            </span>
-          </div>
+    // Fixed width column. Sticky keeps it under your global header without overlapping.
+    <aside className="hidden lg:block w-72 flex-none self-start sticky top-[64px]">
+      <div className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm">
+        <div className="mb-2">
+          <div className="text-2xl font-extrabold text-zinc-900">Pet Adoption</div>
+          <div className="text-sm text-zinc-500">Administration Panel</div>
         </div>
-        
-        <nav className="space-y-2">
-          {navigation.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.name}
-                href={item.href}
-                className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
-                  isActive
-                    ? 'bg-blue-100 text-blue-700 border-r-2 border-blue-700'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
-                }`}
-              >
-                <span className="mr-3 text-lg">{item.icon}</span>
-                {item.name}
-              </Link>
-            );
-          })}
+
+        <nav className="mt-3 space-y-1">
+          <Item href="/admin">Dashboard</Item>
+          <Item href="/admin/pets">Pets</Item>
+          <Item href="/admin/users">Users</Item>
+          <Item href="/admin/requests">Adoption Requests</Item>
+          <Item href="/admin/adopters">Adopters</Item>
+          <Item href="/admin/settings">Settings</Item>
         </nav>
 
-        {/* Quick Stats */}
-        <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-          <h3 className="text-sm font-medium text-gray-700 mb-3">Quick Stats</h3>
-          <div className="space-y-2 text-sm text-gray-600">
-            <div className="flex justify-between">
-              <span>Total Pets:</span>
-              <span className="font-medium">24</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Active Users:</span>
-              <span className="font-medium">156</span>
-            </div>
-            <div className="flex justify-between">
-              <span>Pending Requests:</span>
-              <span className="font-medium">8</span>
-            </div>
-          </div>
+        {/* Live Quick Stats (real data) */}
+        <div className="mt-4">
+          <SidebarQuickStats />
         </div>
 
-        {/* Demo Mode Info */}
-        <div className="mt-6 p-4 bg-green-50 rounded-lg">
-          <div className="flex items-center">
-            <div className="w-8 h-8 rounded-full bg-green-600 flex items-center justify-center">
-              <span className="text-white font-medium text-sm">🎯</span>
-            </div>
-            <div className="ml-3">
-              <p className="text-sm font-medium text-gray-900">Demo Mode</p>
-              <p className="text-xs text-gray-600">No authentication required</p>
-            </div>
-          </div>
-          <div className="mt-3 pt-3 border-t border-green-200">
-            <Link
-              href="/"
-              className="text-xs text-green-600 hover:text-green-800 block mb-1"
-            >
-              ← Back to Site
-            </Link>
-            <div className="text-xs text-gray-500">
-              Full admin access for demonstration
-            </div>
-          </div>
+        <div className="mt-4">
+          <button
+            onClick={() => signOut({ callbackUrl: '/' })}
+            className="w-full rounded-xl bg-rose-600 px-4 py-2 text-sm font-medium text-white hover:bg-rose-500"
+          >
+            Logout
+          </button>
         </div>
       </div>
-    </div>
+    </aside>
   );
 }
